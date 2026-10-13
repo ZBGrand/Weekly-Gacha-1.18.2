@@ -1,0 +1,46 @@
+name: Build WeeklyGacha
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: WeeklyGacha/pom.xml
+
+      - name: Verify project structure
+        run: |
+          echo "Repository root:"
+          ls -la
+          echo "WeeklyGacha project:"
+          ls -la WeeklyGacha
+          test -f WeeklyGacha/pom.xml
+
+      - name: Build with Maven
+        working-directory: ./WeeklyGacha
+        run: mvn -B clean package
+
+      - name: Find generated JAR
+        run: |
+          echo "Generated JAR files:"
+          find WeeklyGacha/target -maxdepth 1 -type f -name "*.jar" -print
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: WeeklyGacha
+          path: WeeklyGacha/target/*.jar
+          if-no-files-found: error
