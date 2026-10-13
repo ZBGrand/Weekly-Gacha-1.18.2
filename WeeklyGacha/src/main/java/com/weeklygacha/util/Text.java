@@ -19,7 +19,7 @@ public final class Text {
     /** Parse MiniMessage, mặc định tắt chữ nghiêng (để dùng cho tên/lore item). */
     public static Component mm(String input, TagResolver... resolvers) {
         return MM.deserialize(input == null ? "" : input, resolvers)
-                .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+                .decoration(TextDecoration.ITALIC, false);
     }
 
     public static List<Component> mmList(List<String> lines, TagResolver... resolvers) {
